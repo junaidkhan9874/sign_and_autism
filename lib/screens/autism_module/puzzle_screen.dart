@@ -231,7 +231,7 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
                   child:
                       buildDragTarget(targetId, Colors.grey.withOpacity(0.3)),
                 );
-              }).toList(),
+              }),
               Positioned(
                 bottom: 100,
                 left: 0,
