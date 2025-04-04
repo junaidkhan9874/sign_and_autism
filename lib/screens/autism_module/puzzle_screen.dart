@@ -85,11 +85,15 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
       }
     }
 
-    pieces = selectedLetters.map((letter) => PuzzlePiece(
-      id: 'piece$letter',
-      child: Text(letter, style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
-      targetId: 'target_$letter',
-    )).toList();
+    pieces = selectedLetters
+        .map((letter) => PuzzlePiece(
+              id: 'piece$letter',
+              child: Text(letter,
+                  style: const TextStyle(
+                      fontSize: 40, fontWeight: FontWeight.bold)),
+              targetId: 'target_$letter',
+            ))
+        .toList();
 
     targetsFilled = Map.fromIterable(selectedLetters,
         key: (v) => 'target_$v', value: (v) => false);
@@ -108,11 +112,15 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
       }
     }
 
-    pieces = selectedNumbers.map((number) => PuzzlePiece(
-      id: 'piece$number',
-      child: Text('$number', style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
-      targetId: 'target_$number',
-    )).toList();
+    pieces = selectedNumbers
+        .map((number) => PuzzlePiece(
+              id: 'piece$number',
+              child: Text('$number',
+                  style: const TextStyle(
+                      fontSize: 40, fontWeight: FontWeight.bold)),
+              targetId: 'target_$number',
+            ))
+        .toList();
 
     targetsFilled = Map.fromIterable(selectedNumbers,
         key: (v) => 'target_$v', value: (v) => false);
@@ -123,70 +131,73 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
     return Scaffold(
       appBar: AppBar(
         // title: Text('${isAlphabet ? 'Alphabet' : 'Number'} - Level $currentLevel'),
-        title: Text('Puzzle Based Learning'  ,
-
-          style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold, // Make it bold
+        title: const Text(
+          'Puzzle Based Learning',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold, // Make it bold
+          ),
         ),
-
-      ),
-      centerTitle: true,
-      backgroundColor: AppColors.primaryColor,
-      foregroundColor: Colors.white,
+        centerTitle: true,
+        backgroundColor: AppColors.primaryColor,
+        foregroundColor: Colors.white,
       ),
       body: isSelectionScreen ? buildSelectionScreen() : buildPuzzleScreen(),
     );
   }
 
   Widget buildSelectionScreen() {
-
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ElevatedButton(
-            onPressed: () {
-              setState(() {
-                isAlphabet = true;
-                isSelectionScreen = false;
-                currentLevel = 1;
-                _initializeLevel();
-              });
-            },
-
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-              textStyle: const TextStyle(fontSize: 20),
-              backgroundColor: Colors.amber,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Alphabet',style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,),
-          )
-          ),
-
+              onPressed: () {
+                setState(() {
+                  isAlphabet = true;
+                  isSelectionScreen = false;
+                  currentLevel = 1;
+                  _initializeLevel();
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                textStyle: const TextStyle(fontSize: 20),
+                backgroundColor: Colors.amber,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text(
+                'Alphabet',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              )),
           const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: () {
-              setState(() {
-                isAlphabet = false;
-                isSelectionScreen = false;
-                currentLevel = 1;
-                _initializeLevel();
-              });
-            },
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-              textStyle: const TextStyle(fontSize: 20),
-              backgroundColor: Colors.amber,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Numbers',style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,),
-            )),
+              onPressed: () {
+                setState(() {
+                  isAlphabet = false;
+                  isSelectionScreen = false;
+                  currentLevel = 1;
+                  _initializeLevel();
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                textStyle: const TextStyle(fontSize: 20),
+                backgroundColor: Colors.amber,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text(
+                'Numbers',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              )),
         ],
       ),
     );
@@ -211,11 +222,14 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
                 final row = index ~/ gridSize;
                 final col = index % gridSize;
                 final top = 100.0 + row * 100.0;
-                final left = (MediaQuery.of(context).size.width / 2) - (gridSize * 40) + col * 80;
+                final left = (MediaQuery.of(context).size.width / 2) -
+                    (gridSize * 40) +
+                    col * 80;
                 return Positioned(
                   top: top,
                   left: left,
-                  child: buildDragTarget(targetId, Colors.grey.withOpacity(0.3)),
+                  child:
+                      buildDragTarget(targetId, Colors.grey.withOpacity(0.3)),
                 );
               }).toList(),
               Positioned(
@@ -231,9 +245,10 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
                       children: pieces
                           .where((piece) => !piece.isPlaced)
                           .map((piece) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: buildDraggablePiece(piece),
-                      ))
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                child: buildDraggablePiece(piece),
+                              ))
                           .toList(),
                     ),
                   ),
@@ -287,8 +302,14 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
     return Draggable<PuzzlePiece>(
       data: piece,
       feedback: Opacity(opacity: 0.7, child: piece.child),
-      childWhenDragging: Opacity(opacity: 0.3, child: SizedBox(width: 50, height: 50, child: piece.child)),
-      child: Container(width: 50, height: 50, child: Center(child: piece.child), decoration: BoxDecoration(border: Border.all(color: Colors.amber))),
+      childWhenDragging: Opacity(
+          opacity: 0.3,
+          child: SizedBox(width: 50, height: 50, child: piece.child)),
+      child: Container(
+          width: 50,
+          height: 50,
+          child: Center(child: piece.child),
+          decoration: BoxDecoration(border: Border.all(color: Colors.amber))),
     );
   }
 
@@ -304,7 +325,10 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
               color: isFilled ? Colors.green.withOpacity(0.3) : targetColor,
               border: Border.all(color: Colors.amber)),
           child: Center(
-            child: isFilled ? const Icon(Icons.check_circle, color: Colors.white, size: 30) : Text(targetId.split("_")[1], style: const TextStyle(fontSize: 30)),
+            child: isFilled
+                ? const Icon(Icons.check_circle, color: Colors.white, size: 30)
+                : Text(targetId.split("_")[1],
+                    style: const TextStyle(fontSize: 30)),
           ),
         );
       },
