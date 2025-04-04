@@ -97,7 +97,7 @@ class AlphabetRecognition extends StatelessWidget {
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4, // Number of columns
-                mainAxisSpacing: 12, // Increased vertical spacing
+                mainAxisSpacing: 8, // Increased vertical spacing
                 crossAxisSpacing: 12, // Increased horizontal spacing
                 childAspectRatio: 1, // Square-shaped cards
               ),

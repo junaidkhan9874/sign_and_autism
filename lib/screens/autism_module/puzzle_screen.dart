@@ -44,6 +44,14 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
     _initializeLevel();
   }
 
+  @override
+  void dispose() {
+    if (timer != null && timer!.isActive) {
+      timer!.cancel();
+    }
+    super.dispose();
+  }
+
   void _initializeLevel() {
     setState(() {
       puzzleComplete = false;
@@ -88,15 +96,12 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
     pieces = selectedLetters
         .map((letter) => PuzzlePiece(
               id: 'piece$letter',
-              child: Text(letter,
-                  style: const TextStyle(
-                      fontSize: 40, fontWeight: FontWeight.bold)),
+              child: Text(letter, style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
               targetId: 'target_$letter',
             ))
         .toList();
 
-    targetsFilled = Map.fromIterable(selectedLetters,
-        key: (v) => 'target_$v', value: (v) => false);
+    targetsFilled = Map.fromIterable(selectedLetters, key: (v) => 'target_$v', value: (v) => false);
   }
 
   void _initializeNumberLevel() {
@@ -115,15 +120,12 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
     pieces = selectedNumbers
         .map((number) => PuzzlePiece(
               id: 'piece$number',
-              child: Text('$number',
-                  style: const TextStyle(
-                      fontSize: 40, fontWeight: FontWeight.bold)),
+              child: Text('$number', style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
               targetId: 'target_$number',
             ))
         .toList();
 
-    targetsFilled = Map.fromIterable(selectedNumbers,
-        key: (v) => 'target_$v', value: (v) => false);
+    targetsFilled = Map.fromIterable(selectedNumbers, key: (v) => 'target_$v', value: (v) => false);
   }
 
   @override
@@ -141,7 +143,23 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
         centerTitle: true,
         backgroundColor: AppColors.primaryColor,
         foregroundColor: Colors.white,
+        actions: isSelectionScreen
+            ? null
+            : [
+          IconButton(
+            icon: const Icon(Icons.restart_alt),
+            tooltip: 'Restart Timer',
+            onPressed: () {
+              setState(() {
+                secondsElapsed = 0;
+                timer?.cancel();
+                _startTimer();
+              });
+            },
+          ),
+        ],
       ),
+
       body: isSelectionScreen ? buildSelectionScreen() : buildPuzzleScreen(),
     );
   }
@@ -161,8 +179,7 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
                 });
               },
               style: ElevatedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                 textStyle: const TextStyle(fontSize: 20),
                 backgroundColor: Colors.amber,
                 foregroundColor: Colors.white,
@@ -185,8 +202,7 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
                 });
               },
               style: ElevatedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                 textStyle: const TextStyle(fontSize: 20),
                 backgroundColor: Colors.amber,
                 foregroundColor: Colors.white,
@@ -205,6 +221,7 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
 
   Widget buildPuzzleScreen() {
     return Column(
+
       children: [
         Padding(
           padding: const EdgeInsets.all(20),
@@ -214,43 +231,41 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
           ),
         ),
         Expanded(
-          child: Stack(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              // ... (Target grid remains the same)
-              ...targetsFilled.keys.map((targetId) {
-                final index = targetsFilled.keys.toList().indexOf(targetId);
-                final row = index ~/ gridSize;
-                final col = index % gridSize;
-                final top = 100.0 + row * 100.0;
-                final left = (MediaQuery.of(context).size.width / 2) -
-                    (gridSize * 40) +
-                    col * 80;
-                return Positioned(
-                  top: top,
-                  left: left,
-                  child:
-                      buildDragTarget(targetId, Colors.grey.withOpacity(0.3)),
-                );
-              }),
-              Positioned(
-                bottom: 100,
-                left: 0,
-                right: 0,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: pieces
-                          .where((piece) => !piece.isPlaced)
-                          .map((piece) => Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                child: buildDraggablePiece(piece),
-                              ))
-                          .toList(),
-                    ),
+              Expanded(
+                child: Stack(
+                  children: [
+                    ...targetsFilled.keys.map((targetId) {
+                      final index = targetsFilled.keys.toList().indexOf(targetId);
+                      final row = index ~/ gridSize;
+                      final col = index % gridSize;
+                      final top = 80.0 + row * 80.0;
+                      final left = (MediaQuery.of(context).size.width / 2) - (gridSize * 35) + col * 75;
+                      return Positioned(
+                        top: top,
+                        left: left,
+                        child: buildDragTarget(targetId, Colors.grey.withOpacity(0.3)),
+                      );
+                    })
+                  ],
+                ),
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: pieces
+                        .where((piece) => !piece.isPlaced)
+                        .map((piece) => Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              child: buildDraggablePiece(piece),
+                            ))
+                        .toList(),
                   ),
                 ),
               ),
@@ -302,15 +317,22 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
     return Draggable<PuzzlePiece>(
       data: piece,
       feedback: Opacity(opacity: 0.7, child: piece.child),
-      childWhenDragging: Opacity(
-          opacity: 0.3,
-          child: SizedBox(width: 50, height: 50, child: piece.child)),
+      childWhenDragging: Opacity(opacity: 0.3, child: SizedBox(width: 50, height: 50, child: piece.child)),
       child: Container(
-          width: 50,
-          height: 50,
-          child: Center(child: piece.child),
-          decoration: BoxDecoration(border: Border.all(color: Colors.amber))),
-    );
+        width: 55,
+        height: 50,
+        decoration: BoxDecoration(border: Border.all(color: Colors.amber)),
+        child: Center(
+          child: piece.child is Text
+              ? Text(
+            (piece.child as Text).data!,
+            textAlign: TextAlign.center, // Center text inside the container
+            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold), // Adjust font size if needed
+          )
+              : piece.child,
+        ),
+
+      ),    );
   }
 
   Widget buildDragTarget(String targetId, Color targetColor) {
@@ -319,16 +341,14 @@ class _PuzzlePieceGameScreenState extends State<PuzzleScreen> {
     return DragTarget<PuzzlePiece>(
       builder: (context, candidateData, rejectedData) {
         return Container(
-          width: 80,
-          height: 80,
+          width: 50,
+          height: 50,
           decoration: BoxDecoration(
-              color: isFilled ? Colors.green.withOpacity(0.3) : targetColor,
-              border: Border.all(color: Colors.amber)),
+              color: isFilled ? Colors.green.withOpacity(0.3) : targetColor, border: Border.all(color: Colors.amber)),
           child: Center(
             child: isFilled
                 ? const Icon(Icons.check_circle, color: Colors.white, size: 30)
-                : Text(targetId.split("_")[1],
-                    style: const TextStyle(fontSize: 30)),
+                : Text(targetId.split("_")[1], style: const TextStyle(fontSize: 30)),
           ),
         );
       },
