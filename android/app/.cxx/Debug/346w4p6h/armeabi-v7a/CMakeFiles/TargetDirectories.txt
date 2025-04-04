@@ -1,0 +1,2 @@
+E:/FYP/sign_and_autism-main/android/app/.cxx/Debug/346w4p6h/armeabi-v7a/CMakeFiles/edit_cache.dir
+E:/FYP/sign_and_autism-main/android/app/.cxx/Debug/346w4p6h/armeabi-v7a/CMakeFiles/rebuild_cache.dir
