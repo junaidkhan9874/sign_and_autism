@@ -11,7 +11,7 @@ class LoginController extends GetxController {
   TextEditingController passwordController = TextEditingController();
 
   goToHomeScreen() {
-    Get.offNamed(RoutesTitles.home);
+    Get.offAllNamed(RoutesTitles.home);
   }
 
   signInToGoogle() async {
@@ -37,7 +37,7 @@ class LoginController extends GetxController {
         .signInWithEmailAndPassword(
             email: emailController.text, password: passwordController.text)
         .then((value) {
-      Get.toNamed(RoutesTitles.home);
+      Get.offAllNamed(RoutesTitles.home);
     });
   }
 }
